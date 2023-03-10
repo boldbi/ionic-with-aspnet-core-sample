@@ -1,0 +1,7 @@
+{
+  "name": "IonicBoldBI",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
