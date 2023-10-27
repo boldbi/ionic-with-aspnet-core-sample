@@ -46,7 +46,7 @@ export class HomePage implements OnInit {
   
     this.dashboard= BoldBI.create({
         serverUrl: this.homeService.baseUrl,
-        dashboardId: "9b82d4e6-1b7d-4247-8b63-3df036029cf5",
+        dashboardId: "",
         embedContainerId: "dashboard",
         embedType: BoldBI.EmbedType.Component,
         environment: this.homeService.environment=="enterprise"? BoldBI.Environment.Enterprise:BoldBI.Environment.Cloud,
