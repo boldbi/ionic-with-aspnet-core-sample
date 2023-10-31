@@ -15,6 +15,6 @@
         public static string UserEmail = "";
 
         // Get the embedSecret key from Bold BI.Please refer this link(https://help.syncfusion.com/bold-bi/on-premise/site-settings/embed-settings)
-        public static string EmbedSecret = ""; //"giEmC2hGCc9nWPFDmChgbisJNghWscFQ";
+        public static string EmbedSecret = "";
     }
 }
