@@ -4,27 +4,27 @@ This Bold BI Ionic sample repository contains the Dashboard embedding sample. Th
 
 This section guides you in using the Bold BI dashboard in your Ionic sample application.
 
- * [Requirements to run the demo](#requirements-to-run-the-demo)
- * [Using the Ionic sample](#using-the-ionic-sample)
- * [Online Demos](#online-demos)
- * [Documentation](#documentation)
- 
- ## Requirements to run the demo
+* [Requirements to run the demo](#requirements-to-run-the-demo)
+* [Using the Ionic sample](#using-the-ionic-sample)
+* [Online Demos](#online-demos)
+* [Documentation](#documentation)
+
+## Requirements to run the demo
 
 The samples require the following requirements to run.
 
- * [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
- * [.NET Core 6.0 or later](https://dotnet.microsoft.com/en-us/download/dotnet-core)
- * [Node.js](https://nodejs.org/en/)
- * [Visual Studio Code](https://code.visualstudio.com/download)
+* [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
+* [.NET Core 6.0 or later](https://dotnet.microsoft.com/en-us/download/dotnet-core)
+* [Node.js](https://nodejs.org/en/)
+* [Visual Studio Code](https://code.visualstudio.com/download)
 
- ## Using the Ionic sample
- 
- * Open the ASP.NET Core sample's solution file `Syncfusion.Server.EmbedBoldBI.sln` in Visual studio. 
+## Using the Ionic sample
 
- * Open the EmbedProperties.cs file in the following location, /Models/EmbedProperties.cs.
+* Open the ASP.NET Core sample's solution file `Syncfusion.Server.EmbedBoldBI.sln` in Visual studio.
 
- * Please change the following properties in the `EmbedProperties.cs` file as per your Bold BI Server.
+* Open the EmbedProperties.cs file in the following location, /Models/EmbedProperties.cs.
+
+* Please change the following properties in the `EmbedProperties.cs` file as per your Bold BI Server.
 
     <meta charset="utf-8"/>
     <table>
@@ -52,14 +52,13 @@ The samples require the following requirements to run.
     </tbody>
     </table>
 
+* Now run the back-end ASP.NET Core sample.
 
- * Now run the back-end ASP.NET Core sample.
- 
- * Open the Ionic sample in Visual studio code or any respective IDE. 
+* Open the Ionic sample in Visual studio code or any respective IDE.
 
- * Open the home.service.ts file in the following location, /src/app/home/home.service.ts.
+* Open the home.service.ts file in the following location, /src/app/home/home.service.ts.
 
- * Please change the following properties in the `home.service.ts` file as per your Bold BI Server. And provide the dashboard id in the `home.page.ts`.
+* Please change the following properties in the `home.service.ts` file as per your Bold BI Server. And provide the dashboard id in the `home.page.ts`.
 
 <meta charset="utf-8"/>
 <table>
@@ -89,9 +88,9 @@ The samples require the following requirements to run.
         <td align="left">API in back-end application, to get the particular dashboard details.</td>
     </tr>
     <tr>
-    <td align="left">getDashboardsUrl</td>
+        <td align="left">getDashboardsUrl</td>
         <td align="left">API in back-end application, to get the list of dashboards from Bold BI server.</td>
-    </tr>    
+    </tr>
 </tbody>
 </table>
 
@@ -106,7 +105,6 @@ Please refer to the [help documentation](https://help.boldbi.com/embedded-bi/jav
 ## Online Demos
 
 Look at the Bold BI Embedding sample to live demo [here](https://samples.boldbi.com/embed).
-
 
 ## Documentation
 
