@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 -->
 # BoldBI Embedding Ionic Sample
 
 This Bold BI Ionic sample repository contains the Dashboard embedding sample. This sample demonstrates how to embed the dashboard which is available in your Bold BI server.
@@ -87,9 +88,9 @@ The samples require the following requirements to run.
         <td align="left">authorizeUrl</td>
         <td align="left">API in back-end application, to get the particular dashboard details.</td>
     </tr>
-    <tr>
-        <td align="left">getDashboardsUrl</td>
-        <td align="left">API in back-end application, to get the list of dashboards from Bold BI server.</td>
+        <tr>
+            <td align="left">getDashboardsUrl</td>
+            <td align="left">API in back-end application, to get the list of dashboards from Bold BI server.</td>
     </tr>
 </tbody>
 </table>
