@@ -14,7 +14,7 @@ This section guides you in using the Bold BI dashboard in your Ionic sample appl
 The samples require the following requirements to run.
 
  * [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
- * [.NET Core 6.0 or later](https://dotnet.microsoft.com/en-us/download/dotnet-core)
+ * [.NET Core 8.0](https://dotnet.microsoft.com/en-us/download/dotnet-core)
  * [Node.js](https://nodejs.org/en/)
  * [Visual Studio Code](https://code.visualstudio.com/download)
 
