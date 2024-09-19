@@ -9,7 +9,7 @@
         public static string SiteIdentifier = "site/site1";
 
         //Your Bold BI application environment. (If Cloud, you should use `cloud`, if Enterprise, you should use `enterprise`)
-        public static string Environment = "Enter your environment";
+        public static string Environment = "enterprise";
 
         //Enter your BoldBI credentials here.
         public static string UserEmail = "";
