@@ -14,7 +14,7 @@ This section guides you in using the Bold BI dashboard in your Ionic sample appl
 The samples require the following requirements to run.
 
 * [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
-* [.NET Core 6.0 or later](https://dotnet.microsoft.com/en-us/download/dotnet-core)
+* [.NET Core 8.0](https://dotnet.microsoft.com/en-us/download/dotnet-core)
 * [Node.js](https://nodejs.org/en/)
 * [Visual Studio Code](https://code.visualstudio.com/download)
 
@@ -55,10 +55,11 @@ The samples require the following requirements to run.
 To run the sample, use the below command in terminal
 
 ```bash
+npm install
 ng serve
 ```
 
-Please refer to the [help documentation](https://help.boldbi.com/embedded-bi/javascript-based/samples/v3.3.40-or-later/other-platform-samples/#ionic-sample-to-embed-dashboard?utm_source=github&utm_medium=backlinks) to know how to run the sample.
+Please refer to the [help documentation](https://help.boldbi.com/embedding-options/embedding-sdk/samples/ionic-with-core/#how-to-run-the-sample?utm_source=github&utm_medium=backlinks) to know how to run the sample.
 
 ## Online Demos
 
