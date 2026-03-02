@@ -2,14 +2,7 @@
 
 This Bold BI Ionic sample repository contains the Dashboard embedding sample. This sample demonstrates how to embed the dashboard which is available in your Bold BI server.
 
-This section guides you in using the Bold BI dashboard in your Ionic sample application.
-
-* [Requirements to run the demo](#requirements-to-run-the-demo)
-* [Using the Ionic sample](#using-the-ionic-sample)
-* [Online Demos](#online-demos)
-* [Documentation](#documentation)
-
-## Requirements to run the demo
+## Requirements
 
 The samples require the following requirements to run.
 
@@ -18,46 +11,70 @@ The samples require the following requirements to run.
 * [Node.js](https://nodejs.org/en/)
 * [Visual Studio Code](https://code.visualstudio.com/download)
 
-## Using the Ionic sample
+### Supported browsers
+  
+* Google Chrome, Microsoft Edge, and Mozilla Firefox.
 
-* Open the ASP.NET Core sample's solution file `Syncfusion.Server.EmbedBoldBI.sln` in Visual studio.
+## Configuration
 
-* Open the EmbedProperties.cs file in the following location, /Models/EmbedProperties.cs.
+* Please ensure you have enabled embed authentication on the `embed settings` page. If it is not currently enabled, please refer to the following image or detailed [instructions](https://help.boldbi.com/site-administration/embed-settings/#get-embed-secret-code?utm_source=github&utm_medium=backlinks) to enable it.
+  
+    ![Embed Settings](/images/enable-embedsecretkey.png)
 
-* Please change the following properties in the `EmbedProperties.cs` file as per your Bold BI Server.
+* To download the `embedConfig.json` file, please follow this [link](https://help.boldbi.com/site-administration/embed-settings/#get-embed-configuration-file?utm_source=github&utm_medium=backlinks) for reference. Additionally, you can refer to the following image for visual guidance.
 
-| **Parameter**       | **Description**                                                                                                      |
-|---------------------|----------------------------------------------------------------------------------------------------------------------|
-| **RootUrl**         | Dashboard Server URL (e.g., `http://localhost:5000/bi`, `http://demo.boldbi.com/bi`).                                                                               |
-| **EmbedSecret**     | Get your EmbedSecret key from the Embed tab by enabling the `Enable embed authentication` on the [Administration page](https://help.boldbi.com/embedded-bi/site-administration/embed-settings/?utm_source=github&utm_medium=backlinks). |
-| **SiteIdentifier**   | For the Bold BI Enterprise edition, it should be like `site/site1`. For Bold BI Cloud, it should be an empty string.                                                |
-| **Environment**     | Your Bold BI application environment. (If Cloud, you should use `cloud`; if Enterprise, you should use `enterprise`.)                                               |
-| **UserEmail**       | UserEmail of the Admin in your Bold BI, which would be used to get the dashboard list.                                                                                |
+    ![Embed Settings Download](/images/download-embedsecretkey.png)
+    ![EmbedConfig Properties](/images/embedconfig-file.png)
 
-* Now run the back-end ASP.NET Core sample.
+* Copy the downloaded `embedConfig.json` file and paste it into the designated [location](https://github.com/boldbi/angular-with-aspnet-core-sample/tree/master/ASP.NET%20Core/BoldBI.Embed.Sample) within the application. Please ensure you have placed it in the application, as shown in the following image.
 
-* Open the Ionic sample in Visual studio code or any respective IDE.
+    ![EmbedConfig image](/images/core-embedconfig-location.png)
 
-* Open the home.service.ts file in the following location, /src/app/home/home.service.ts.
+## Run a Sample Using Command Line Interface
 
-* Please change the following properties in the `home.service.ts` file as per your Bold BI Server. And provide the dashboard id in the `home.page.ts`.
+### ASP.NET Core sample via CLI
 
-| **Parameter**       | **Description** |
-|---------------------|-----------------|
-| **apiHost**         | Asp.Net Core application would be run on `http://localhost:61377/`, which needs to be set as `apiHost`. |
-| **environment**     | Your Bold BI application environment. (If Cloud, you should use `cloud`, if Enterprise, you should use `enterprise`). |
-| **RootUrl**         | Dashboard Server BI URL (e.g., `http://localhost:5000/bi`, `http://dashboard.syncfusion.com/bi`). |
-| **SiteIdentifier**  | For Bold BI Enterprise edition, it should be like `site/site1`. For Bold BI Cloud, it should be an empty string. |
-| **DashboardId**     | Provide the dashboard id of the dashboard that you want to embed here. |
-| **authorizeUrl**    | API in back-end application, to get the particular dashboard details. |
-| **getDashboardsUrl**| API in back-end application, to get the list of dashboards from Bold BI server. |
+  1. Open the command line interface and navigate to the specified file [location](https://github.com/boldbi/ionic-with-aspnet-core-sample/tree/master/BoldBI.Embed.Sample/BoldBI.Embed.Sample) where the project is located.
 
-To run the sample, use the below command in terminal
+  2. Execute the command `dotnet restore` to restore the necessary packages. Once the packages have been successfully restored, use the `dotnet build` command to build the project.
+  
+  3. Finally, run the application using the command `dotnet run`. Once the application has started, it will display a URL in the command line interface, typically something like https://localhost:5001. Copy this URL and paste it into your default web browser, appending `/api/boldbiembed` to it.
 
-```bash
-npm install
-ng serve
-```
+### Ionic sample via CLI
+
+  1. Open the command prompt and navigate to the specified file [location](https://github.com/boldbi/ionic-with-aspnet-core-sample/tree/master/Ionic%20sample) where the project is located.
+
+  2. To install all dependent packages, use the following command `npm install`.
+
+  3. Finally, run the application using the command `ng serve`. After the application has started, it will display a URL in the `command line interface`, typically something like (e.g., <http://localhost:4200>). Copy this URL and paste it into your default web browser.
+
+## Developer IDE
+
+* [Visual Studio Code](<https://code.visualstudio.com/download>)
+
+## Run a Sample Using Visual Studio Code
+
+### ASP.NET Core sample via VS Code
+
+  1. Open the BoldBI.Embed.Sample folder in Visual Studio Code.
+
+  2. Open the terminal in Visual Studio Code and execute the command `dotnet restore` to restore the required dependencies.
+
+  3. Build your .NET project by executing the `dotnet build` command in the terminal.
+  
+  4. Finally, run the application using the command `dotnet run`. Once the application has started, it will display a URL in the command line interface, typically something like https://localhost:5001. Copy this URL and paste it into your default web browser, appending `/api/boldbiembed` to it, as shown in the image below.
+
+      ![dashboard image](/images/core-running.png)
+
+### Ionic sample via VS Code
+
+  1. Open the Ionic sample folder in Visual Studio Code.
+
+  2. To install all dependent packages, use the following command `npm install`.
+
+  3. To run the application, use the command `ng serve` in the terminal. After the application has started, it will display a URL in the `command line interface`, typically something like (e.g., <http://localhost:4200>). Copy this URL and paste it into your default web browser.
+
+     ![dashboard view](/images/dashboard.png)
 
 Please refer to the [help documentation](https://help.boldbi.com/embedding-options/embedding-sdk/samples/ionic-with-core/#how-to-run-the-sample?utm_source=github&utm_medium=backlinks) to know how to run the sample.
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HomeService } from './home.service';
+import { HttpClient } from '@angular/common/http';
 declare var BoldBI: any;
 
 export class Item {
@@ -12,64 +13,66 @@ export class Item {
   CategoryName: string;
 }
 
-
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
 
+export class HomePage implements OnInit {
   public dashboardsList: Item[];
   result: any;
   dashboard: any;
-  
-  constructor(private homeService: HomeService) {}
-  
-  
+
+  constructor(private homeService: HomeService, private http: HttpClient) { }
+
   ngOnInit(): void {
-  
-    if (this.homeService.environment == "enterprise") {
-      this.homeService.baseUrl = this.homeService.rootUrl + "/" + this.homeService.siteIdentifier;
-      this.homeService.dashboardServerApiUrl = this.homeService.rootUrl + "/api/" + this.homeService.siteIdentifier;
-    }
-    else {
-      this.homeService.baseUrl = this.homeService.rootUrl;
-      this.homeService.dashboardServerApiUrl = this.homeService.rootUrl + "/api";
-  
-    }
-    this.renderDashboard();
-  }
-  
+    // Fetch embed configuration from backend GetData action
+    this.http.get<any>(this.homeService.apiHost + this.homeService.getEmbedConfigUrl).subscribe(data => {
+      const transformedEmbedConfigData = {
+        DashboardId: data.DashboardId || data.dashboardId,
+        EmbedType: data.EmbedType || data.embedType,
+        Environment: data.Environment || data.environment,
+        ServerUrl: data.ServerUrl || data.serverUrl,
+        SiteIdentifier: data.SiteIdentifier || data.siteIdentifier
+      };
 
-  renderDashboard(dashboard?: Item) {
-  
-    this.dashboard= BoldBI.create({
-        serverUrl: this.homeService.baseUrl,
-        dashboardId: "",
-        embedContainerId: "dashboard",
-        embedType: BoldBI.EmbedType.Component,
-        environment: this.homeService.environment=="enterprise"? BoldBI.Environment.Enterprise:BoldBI.Environment.Cloud,
-        width:"100%",
-        height:"100%",
-        expirationTime:100000,
-        authorizationServer: {
-            url:this.homeService.apiHost + this.homeService.authorizationUrl
-        },
-        autoRefreshSettings: {
-            enabled: true,
-            hourlySchedule: {
-                hours: 0,
-                minutes: 1,
-                seconds: 0
-            }
+      // store in HomeService for reuse
+      this.homeService.embedConfig = transformedEmbedConfigData;
 
-        },
-        actionBegin:"emdbedDashboardActionBegin",
-        actionComplete:"emdbedDashboardActionComplete"
+      if (transformedEmbedConfigData.Environment == "enterprise" || transformedEmbedConfigData.Environment == "onpremise") {
+        this.homeService.baseUrl = transformedEmbedConfigData.ServerUrl + "/" + transformedEmbedConfigData.SiteIdentifier;
+        this.homeService.dashboardServerApiUrl = transformedEmbedConfigData.ServerUrl + "/api/" + transformedEmbedConfigData.SiteIdentifier;
+      } else {
+        this.homeService.baseUrl = transformedEmbedConfigData.ServerUrl;
+        this.homeService.dashboardServerApiUrl = transformedEmbedConfigData.ServerUrl + "/api";
+      }
+
+      // now render using fetched config
+      this.renderDashboard();
+    }, error => {
+      console.error('Failed to load embed config', error);
+      // fallback to existing behavior
+      if (this.homeService.environment == "enterprise") {
+        this.homeService.baseUrl = this.homeService.rootUrl + "/" + this.homeService.siteIdentifier;
+        this.homeService.dashboardServerApiUrl = this.homeService.rootUrl + "/api/" + this.homeService.siteIdentifier;
+      } else {
+        this.homeService.baseUrl = this.homeService.rootUrl;
+        this.homeService.dashboardServerApiUrl = this.homeService.rootUrl + "/api";
+      }
+      this.renderDashboard();
     });
+  }
 
-    console.log(this.dashboard);
-    this.dashboard.loadDashboard();        
-  } 
+  renderDashboard() {
+    this.dashboard = BoldBI.create({
+      serverUrl: this.homeService.baseUrl,
+      dashboardId: this.homeService.embedConfig.DashboardId,
+      embedContainerId: "dashboard",
+      authorizationServer: {
+        url: this.homeService.apiHost + this.homeService.authorizationUrl
+      }
+    });
+    this.dashboard.loadDashboard();
+  }
 }

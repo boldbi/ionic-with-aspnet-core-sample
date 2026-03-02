@@ -5,36 +5,32 @@ import { Injectable } from '@angular/core';
 })
 export class HomeService {
 
-//Asp.Net core application would be run on http://localhost:61377/, which needs to be set as `apiHost`
+  //Asp.Net core application would be run on http://localhost:61377/, which needs to be set as `apiHost`
+  public apiHost = "https://localhost:5001";
 
-public apiHost="http://localhost:61377";
+  //Your Bold BI application environment. (If Cloud, you should use `cloud`, if Enterprise, you should use `enterprise`)
+  public environment = "enterprise";
 
-//Your Bold BI application environment. (If Cloud, you should use `cloud`, if Enterprise, you should use `enterprise`)
-public  environment = "enterprise";
+  //Dashboard Server BI URL (ex: http://localhost:5000/bi, http://demo.boldbi.com/bi)
+  public rootUrl = "http://localhost:60515/bi";
 
-//Dashboard Server BI URL (ex: http://localhost:5000/bi, http://demo.boldbi.com/bi)
-public  rootUrl = "http://localhost:53623/bi";
+  //For Bold BI Enterprise edition, it should be like `site/site1`. For Bold BI Cloud, it should be empty string.
+  public siteIdentifier = "site/site1";
 
-//For Bold BI Enterprise edition, it should be like `site/site1`. For Bold BI Cloud, it should be empty string.
-public  siteIdentifier = "site/site1";
+  //Url of the GetDetails action in BoldBIEmbedController of the ASP.NET Core application
+  public authorizationUrl = "/api/boldbiembed/getdetails";
 
+  // Url to fetch embed configuration (GetData action in BoldBIEmbedController)
+  public getEmbedConfigUrl = "/api/boldbiembed/getdata";
 
- //Url of the GetDetails action in ValuesController of the ASP.NET Core application
-public authorizationUrl="/api/boldbiembed/getdetails";
+  // Will be populated at runtime with the embed configuration fetched from backend
+  public embedConfig: any;
 
- //Url of the GetDashboards action in ValuesController of the ASP.NET Core application
-public getDashboardsUrl="Add your url here";
+  public dashboards: any;
 
-public dashboards: any;
+  public baseUrl: any;
 
-public baseUrl: any;
+  public dashboardServerApiUrl: string;
 
-public dashboardServerApiUrl: string;
-
-constructor() { }
-
-
-
-
-
+  constructor() { }
 }
