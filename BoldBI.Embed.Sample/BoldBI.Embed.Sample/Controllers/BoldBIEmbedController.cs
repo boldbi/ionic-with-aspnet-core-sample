@@ -2,101 +2,82 @@
 using System.Net.Http;
 using BoldBI.Embed.Sample.Model;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Newtonsoft.Json;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
+using System.IO;
+using System.Text;
 
 namespace BoldBI.Embed.Sample.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BoldBIEmbedController : ControllerBase
+    public class BoldBIEmbedController : Controller
     {
         [HttpGet]
-        public string Get()
+        public IActionResult Get()
         {
-            return "Application Running....";
+            try
+            {
+                string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                string jsonString = System.IO.File.ReadAllText(Path.Combine(basePath, "embedConfig.json"));
+                GlobalAppSettings.EmbedDetails = JsonConvert.DeserializeObject<EmbedDetails>(jsonString);
+                return Ok("Application Running....");
+            }
+            catch
+            {
+                return View("EmbedConfigErrorLog");
+            }
         }
 
         [HttpGet]
-        [Route("GetDashboards")]
-        public string GetDashboards()
+        [Route("GetData")]
+        public IActionResult GetData()
         {
-            var token = GetToken();
+            var jsonData = System.IO.File.ReadAllText("embedConfig.json");
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            string jsonString = System.IO.File.ReadAllText(Path.Combine(basePath, "embedConfig.json"));
+            GlobalAppSettings.EmbedDetails = JsonConvert.DeserializeObject<EmbedDetails>(jsonString);
 
-            using (var client = new HttpClient())
+            return Json(new
             {
-                client.BaseAddress = new Uri(EmbedProperties.RootUrl);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("Authorization", token.TokenType + " " + token.AccessToken);
-                var result = client.GetAsync(EmbedProperties.RootUrl + "/api/" + EmbedProperties.SiteIdentifier + "/v2.0/items?ItemType=2").Result;
-                string resultContent = result.Content.ReadAsStringAsync().Result;
-                return resultContent;
-            }
-        }
-
-        public Token GetToken()
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(EmbedProperties.RootUrl);
-                client.DefaultRequestHeaders.Accept.Clear();
-
-                var content = new FormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("grant_type", "embed_secret"),
-                    new KeyValuePair<string, string>("Username", EmbedProperties.UserEmail),
-                    new KeyValuePair<string, string>("embed_secret", EmbedProperties.EmbedSecret)
-                });
-                var result = client.PostAsync(EmbedProperties.RootUrl + "/api/" + EmbedProperties.SiteIdentifier + "/token", content).Result;
-                string resultContent = result.Content.ReadAsStringAsync().Result;
-                var response = JsonConvert.DeserializeObject<Token>(resultContent);
-                return response;
-            }
+                DashboardId = GlobalAppSettings.EmbedDetails.DashboardId,
+                ServerUrl = GlobalAppSettings.EmbedDetails.ServerUrl,
+                EmbedType = GlobalAppSettings.EmbedDetails.EmbedType,
+                Environment = GlobalAppSettings.EmbedDetails.Environment,
+                SiteIdentifier = GlobalAppSettings.EmbedDetails.SiteIdentifier
+            });
         }
 
         [HttpPost]
-        [Route("GetDetails")]
-        public string GetDetails([FromBody] object embedQuerString)
+        [Route("TokenGeneration")]
+        public string TokenGeneration()
         {
-            var embedClass = Newtonsoft.Json.JsonConvert.DeserializeObject<EmbedClass>(embedQuerString.ToString());
+            var embedDetails = new
+            {
+                email = GlobalAppSettings.EmbedDetails.UserEmail,
+                serverurl = GlobalAppSettings.EmbedDetails.ServerUrl,
+                siteidentifier = GlobalAppSettings.EmbedDetails.SiteIdentifier,
+                embedsecret = GlobalAppSettings.EmbedDetails.EmbedSecret,
+                dashboard = new  // Dashboard ID property is mandatory only when using BoldBI version 14.1.11.
+                {
+                    id = GlobalAppSettings.EmbedDetails.DashboardId
+                }
+            };
 
-            var embedQuery = embedClass.embedQuerString;
-            // User your user-email as embed_user_email
-            embedQuery += "&embed_user_email=" + EmbedProperties.UserEmail;
-            //To set embed_server_timestamp to overcome the EmbedCodeValidation failing while different timezone using at client application.
-            double timeStamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            embedQuery += "&embed_server_timestamp=" + timeStamp;
-            var embedDetailsUrl = "/embed/authorize?" + embedQuery + "&embed_signature=" + GetSignatureUrl(embedQuery);
-
+            // Post call to Bold BI server
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(embedClass.dashboardServerApiUrl);
-                client.DefaultRequestHeaders.Accept.Clear();
+                var requestUrl = string.IsNullOrWhiteSpace(embedDetails.siteidentifier)
+                    ? $"{embedDetails.serverurl}/api/embed/authorize"
+                    : $"{embedDetails.serverurl}/api/{embedDetails.siteidentifier}/embed/authorize";
 
-                var result = client.GetAsync(embedClass.dashboardServerApiUrl + embedDetailsUrl).Result;
-                string resultContent = result.Content.ReadAsStringAsync().Result;
-                return resultContent;
+                var jsonPayload = JsonConvert.SerializeObject(embedDetails);
+                var httpContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                var result = client.PostAsync(requestUrl, httpContent).Result;
+                var resultContent = result.Content.ReadAsStringAsync().Result;
+
+                return JsonConvert.DeserializeObject<dynamic>(resultContent).Data.access_token;
             }
-
-        }
-
-        public string GetSignatureUrl(string queryString)
-        {
-            if (queryString != null)
-            {
-                var encoding = new System.Text.UTF8Encoding();
-                var keyBytes = encoding.GetBytes(EmbedProperties.EmbedSecret);
-                var messageBytes = encoding.GetBytes(queryString);
-                using (var hmacsha1 = new HMACSHA256(keyBytes))
-                {
-                    var hashMessage = hmacsha1.ComputeHash(messageBytes);
-                    return Convert.ToBase64String(hashMessage);
-                }
-            }
-            return string.Empty;
         }
     }
 }
