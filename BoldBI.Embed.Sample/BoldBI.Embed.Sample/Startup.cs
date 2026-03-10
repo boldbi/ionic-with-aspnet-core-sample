@@ -46,8 +46,11 @@ namespace BoldBI.Embed.Sample
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
+            app.UseEndpoints(endpoints =>{
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=BoldBIEmbed}/{action=Get}/{id?}");
+
                 endpoints.MapControllers();
             });
         }

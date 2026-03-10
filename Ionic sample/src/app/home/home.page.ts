@@ -1,16 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HomeService } from './home.service';
+import { DashboardService } from '../dashboard.service';
+import { appService } from '../app.service';
+import { environment } from 'src/environments/environment';
 declare var BoldBI: any;
-
-export class Item {
-  Name: string;
-  Description: string;
-  Id: string;
-  Version: string;
-  IsPublic: boolean;
-  ItemLocation: string;
-  CategoryName: string;
-}
 
 
 @Component({
@@ -20,56 +13,60 @@ export class Item {
 })
 export class HomePage implements OnInit {
 
-  public dashboardsList: Item[];
-  result: any;
+  public result: any;
   dashboard: any;
   
-  constructor(private homeService: HomeService) {}
+  constructor(private _app: appService, private homeService: HomeService, private dashboardService: DashboardService) {}
   
   
   ngOnInit(): void {
-  
-    if (this.homeService.environment == "enterprise") {
-      this.homeService.baseUrl = this.homeService.rootUrl + "/" + this.homeService.siteIdentifier;
-      this.homeService.dashboardServerApiUrl = this.homeService.rootUrl + "/api/" + this.homeService.siteIdentifier;
-    }
-    else {
-      this.homeService.baseUrl = this.homeService.rootUrl;
-      this.homeService.dashboardServerApiUrl = this.homeService.rootUrl + "/api";
-  
-    }
-    this.renderDashboard();
-  }
-  
-
-  renderDashboard(dashboard?: Item) {
-  
-    this.dashboard= BoldBI.create({
-        serverUrl: this.homeService.baseUrl,
-        dashboardId: "",
-        embedContainerId: "dashboard",
-        embedType: BoldBI.EmbedType.Component,
-        environment: this.homeService.environment=="enterprise"? BoldBI.Environment.Enterprise:BoldBI.Environment.Cloud,
-        width:"100%",
-        height:"100%",
-        expirationTime:100000,
-        authorizationServer: {
-            url:this.homeService.apiHost + this.homeService.authorizationUrl
-        },
-        autoRefreshSettings: {
-            enabled: true,
-            hourlySchedule: {
-                hours: 0,
-                minutes: 1,
-                seconds: 0
+        this._app.GetEmbedConfig(this.homeService.apiHost + this.homeService.getEmbedConfigUrl).subscribe(data => {
+            this.homeService.embedConfig = <any>data;
+            // Transform camelCase keys to PascalCase
+            const transformedEmbedConfigData = {
+                DashboardId: this.homeService.embedConfig.dashboardId,
+                EmbedType: this.homeService.embedConfig.embedType,
+                Environment: this.homeService.embedConfig.environment,
+                ServerUrl: this.homeService.embedConfig.serverUrl,
+                SiteIdentifier: this.homeService.embedConfig.siteIdentifier
+            };
+            this.dashboardService.setEmbedConfig(transformedEmbedConfigData);
+            if (this.dashboardService.embedConfig.Environment == "enterprise" || this.dashboardService.embedConfig.Environment == "onpremise") {
+                this.homeService.baseUrl = this.dashboardService.embedConfig.ServerUrl + "/" + this.dashboardService.embedConfig.SiteIdentifier;
+            } else {
+                this.homeService.baseUrl = this.dashboardService.embedConfig.ServerUrl;
             }
+        })
+        this.renderDashboard();
+    }
 
-        },
-        actionBegin:"emdbedDashboardActionBegin",
-        actionComplete:"emdbedDashboardActionComplete"
-    });
+    getEmbedToken() {
+        return fetch(this.homeService.apiHost + this.homeService.tokenGenerationUrl, { // Backend application URL
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Token fetch failed");
+                return response.text();
+            });
+    }
 
-    console.log(this.dashboard);
-    this.dashboard.loadDashboard();        
-  } 
+    renderDashboard() {
+        this.getEmbedToken()
+            .then(accessToken => {
+                const dashboard = BoldBI.create({
+                    serverUrl: this.homeService.baseUrl,
+                    dashboardId: this.dashboardService.embedConfig.DashboardId,
+                    embedContainerId: "dashboard",
+                    environment:this.dashboardService.embedConfig.Environment,
+                    embedToken: accessToken
+                });
+
+                dashboard.loadDashboard();
+            })
+            .catch(err => {
+                console.error("Error rendering dashboard:", err);
+            });
+    };
 }
