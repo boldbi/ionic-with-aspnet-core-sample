@@ -18,6 +18,8 @@ The samples require the following requirements to run.
 * [Node.js](https://nodejs.org/en/)
 * [Visual Studio Code](https://code.visualstudio.com/download)
 
+ > **NOTE:** Node.js supported from v20.19.
+
 ## Using the Ionic sample
 
 * Open the ASP.NET Core sample's solution file `Syncfusion.Server.EmbedBoldBI.sln` in Visual studio.

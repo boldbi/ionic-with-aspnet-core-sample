@@ -8,6 +8,7 @@ declare var BoldBI: any;
 
 @Component({
   selector: 'app-home',
+  standalone: false,
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
